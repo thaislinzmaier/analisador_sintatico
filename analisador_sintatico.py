@@ -28,9 +28,10 @@ TKLong = 25
 TKUnsigned = 26
 TKPointer = 27
 TKArray = 28
+TKFor = 28
 
 # Dicionário para mapear números de tokens para seus nomes correspondentes
-token_names = {
+token_names = {  # Meter um enum pra tirar essas constantezada malucas talvez?
     TKId: "TKId",
     TKVoid: "TKVoid",
     TKInt: "TKInt",
@@ -59,7 +60,8 @@ token_names = {
     TKDoisPontos: "TKDoisPontos",
     TKSub: "TKSub",
     TKPointer: "TKPointer",
-    TKArray: "TKArray"
+    TKArray: "TKArray",
+    TKFor: "TKFor",
 }
 
 
@@ -74,23 +76,26 @@ lex = ""
 arqin = None
 c = ''  # último caractere lido do arquivo
 
+
 class PalRes:
     def __init__(self, palavra, tk):
         self.palavra = palavra
         self.tk = tk
 
-lista_pal = [
-    ("void", TKVoid),
-    ("int", TKInt),
-    ("float", TKFloat),
-    ("char", TKChar),
-    ("double", TKDouble),
-    ("else", TKElse),
-    ("if", TKIf),
-    ("long", TKLong),
-    ("unsigned", TKUnsigned),
-    ("fimtabela", TKId)
-]
+
+lista_palavras_reservadas = {
+    "void": TKVoid,
+    "int": TKInt,
+    "float": TKFloat,
+    "char": TKChar,
+    "double": TKDouble,
+    "else": TKElse,
+    "for": TKFor,
+    "if": TKIf,
+    "long": TKLong,
+    "unsigned": TKUnsigned,
+    "fimtabela": TKId,
+}
 
 # def palavra_reservada(lex):
 #     postab = 0
@@ -100,11 +105,10 @@ lista_pal = [
 #         postab += 1
 #     return TKId
 
+
 def palavra_reservada(lex):
-    for palavra, token in lista_pal:
-        if lex == palavra:
-            return token
-    return TKId
+    return lista_palavras_reservadas.get(lex, TKId)
+
 
 def getToken():
     global tk, c, lex, pos
@@ -209,9 +213,9 @@ def getToken():
                 print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
                 fim = True
                 return
-            elif c in r' \n\t\r':
+            elif c in ' \n\t\r':
+                lex = lex[:-1]
                 proxC()
-                posl -= 1
             else:
                 print(f"Erro léxico: encontrou o caractere {c} ({ord(c)})")
                 while c != '\n':
@@ -226,11 +230,13 @@ def getToken():
             #     tk = palavra_reservada(lex)
             #     return
             else:
+                lex = lex[:-1]
                 tk = palavra_reservada(lex)
                 # if tk == TKId:
                 #     lex = lex[:-1]
                 print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
                 return
+
 
 def proxC():
     global c
@@ -239,11 +245,13 @@ def proxC():
         c = ''
     print(f"Caractere lido: '{c}'")
 
+
 def E():
     if F():
         if E2():
             return True
     return False
+
 
 def E2():
     global tk
@@ -255,6 +263,7 @@ def E2():
         return False
     return True
 
+
 def F():
     global tk
     if tk == TKId or tk == TKCteInt:
@@ -263,6 +272,7 @@ def F():
     else:
         print(f"Esperava um identificador ou constante. Encontrou {lex}")
         return False
+
 
 def DecFunc():
     if Tipo():
@@ -282,13 +292,15 @@ def DecFunc():
         return False
     return False
 
+
 def Tipo():
     global tk
     print('TK', tk)
-    if tk == TKInt or tk == TKFloat:
+    if tk == TKInt or tk == TKFloat or tk == TKVoid:
         getToken()
         return True
     return False
+
 
 def ComComp():
     global tk
@@ -303,6 +315,7 @@ def ComComp():
             return False
         return False
     return False
+
 
 def Lista():
     global tk
@@ -320,6 +333,7 @@ def Lista():
         return False
     return True
 
+
 def ComExp():
     print("Entrei no ComExp")
     if E():
@@ -328,6 +342,7 @@ def ComExp():
             return True
         return False
     return False
+
 
 def DecVar():
     if Tipo():
@@ -339,6 +354,7 @@ def DecVar():
             return False
         return False
     return False
+
 
 def main():
     global arqin
@@ -355,6 +371,7 @@ def main():
         print(c)
         print("Erro sintático")
     arqin.close()
+
 
 if __name__ == "__main__":
     main()
