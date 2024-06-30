@@ -1,34 +1,61 @@
+import string
+
 # Definindo os tokens
-TKId = 1
-TKVoid = 2
-TKInt = 3
-TKFloat = 4
-TKVirgula = 5
-TKDoisPontos = 6
-TKAbrePar = 7
-TKFechaPar = 8
-TKAtrib = 9
-TKPontoEVirgula = 10
-TKAbreChaves = 11
-TKFechaChaves = 12
-TKMais = 13
-TKDuploMais = 14
-TKProd = 15
-TKChar = 16
-TKSub = 17
-TKAbreColchete = 18
-TKFechaColchete = 19
-TKAtribMais = 20
-TKDouble = 21
-TKCteInt = 22
-TKElse = 23
-TKIf = 23
-TKFimArquivo = 24
-TKLong = 25
-TKUnsigned = 26
-TKPointer = 27
-TKArray = 28
-TKFor = 28
+TKId = 1 #ok
+TKVoid = 2 #ok
+TKInt = 3 #ok
+TKFloat = 4 #ok
+TKVirgula = 5 #ok
+TKDoisPontos = 6 #ok
+TKAbrePar = 7 #ok
+TKFechaPar = 8 #ok
+TKAtrib = 9 #ok
+TKPontoEVirgula = 10 #ok
+TKAbreChaves = 11 #ok
+TKFechaChaves = 12 #ok
+TKMais = 13 #ok
+TKDuploMais = 14 #ok
+TKProd = 15 #ok
+TKChar = 16 #ok
+TKSub = 17 #ok
+TKAbreColchete = 18 #ok
+TKFechaColchete = 19 #ok
+TKAtribMais = 20 #ok
+TKDouble = 21 #ok
+TKCteInt = 22 #ok
+TKElse = 23 #ok
+TKIf = 23 #ok
+TKFimArquivo = 24 #ok
+TKLong = 25 #ok
+TKUnsigned = 26 #ok
+TKPointer = 27 #ok
+TKArray = 28 #ERRO
+TKFor = 28 #ok
+TKDiv = 29 #ok
+TKPerc = 30 #ok
+TKMaior = 31 #ok
+TKMenor = 32 #ok
+TKIgual = 33 #ok
+TKDiferente = 34 #ok
+TKMenorIgual = 35 #ok
+TKMaiorIgual = 36 #ok
+TKAnd = 37 #ok
+TKPipe = 38 #ok
+TKCirc = 39 #ok
+TKShiftRight = 40 #ok
+TKShiftLeft = 41 #ok
+TKTil = 42 #ok
+TKAndAnd = 43 #ok
+TKPipePipe = 44 #ok
+TKExc = 45 #ok
+TKMenosIgual = 46 #ok
+TKAstIgual = 47 #ok
+TKDivIgual = 48 #ok
+TKPercIgual = 49 #ok
+TKShiftRightIgual = 50 #ok
+TKShiftLeftIgual = 51 #ok
+
+
 
 # Dicionário para mapear números de tokens para seus nomes correspondentes
 token_names = {  # Meter um enum pra tirar essas constantezada malucas talvez?
@@ -62,25 +89,37 @@ token_names = {  # Meter um enum pra tirar essas constantezada malucas talvez?
     TKPointer: "TKPointer",
     TKArray: "TKArray",
     TKFor: "TKFor",
+    TKDiv : "TKDiv",
+    TKPerc : "TKPerc",
+    TKMaior : "TKMaior",
+    TKMenor : "TKMenor",
+    TKIgual : "TKIgual",
+    TKDiferente : "TKDiferente",
+    TKMenorIgual : "TKMenorIgual",
+    TKMaiorIgual : "TKMaiorIgual",
+    TKAnd : "TKAnd",
+    TKPipe : "TKPipe",
+    TKCirc : "TKCirc",
+    TKShiftRight : "TKShiftRight",
+    TKShiftLeft : "TKShiftLeft",
+    TKTil : "TKTil",
+    TKAndAnd : "TKAndAnd",
+    TKPipePipe : "TkPipePipe",
+    TKExc : "TKExc",
+    TKMenosIgual : "TKMenosIgual",
+    TKAstIgual : "TKAstIgual",
+    TKDivIgual : "TKDivIgual",
+    TKPercIgual : "TKPercIgual",
+    TKShiftRightIgual : "TKShiftRightIgual",
+    TKShiftLeftIgual : "TKShiftLeftIgual"
 }
 
-
-false = 0
-true = 1
-
-import string
 
 pos = 0
 tk = 0
 lex = ""
 arqin = None
 c = ''  # último caractere lido do arquivo
-
-
-class PalRes:
-    def __init__(self, palavra, tk):
-        self.palavra = palavra
-        self.tk = tk
 
 
 lista_palavras_reservadas = {
@@ -96,15 +135,6 @@ lista_palavras_reservadas = {
     "unsigned": TKUnsigned,
     "fimtabela": TKId,
 }
-
-# def palavra_reservada(lex):
-#     postab = 0
-#     while lista_pal[postab].palavra != "fimtabela":
-#         if lex == lista_pal[postab].palavra:
-#             return lista_pal[postab].tk
-#         postab += 1
-#     return TKId
-
 
 def palavra_reservada(lex):
     return lista_palavras_reservadas.get(lex, TKId)
@@ -132,6 +162,12 @@ def getToken():
                 return
             elif c == '=':
                 proxC()
+                if c == '=':
+                    lex += c
+                    proxC()
+                    tk = TKIgual
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
                 tk = TKAtrib
                 print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
                 return
@@ -153,11 +189,136 @@ def getToken():
                     tk = TKMais
                     print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
                     return
+            elif c == '-':
+                proxC()
+                if c == '=':
+                    lex += c
+                    proxC()
+                    tk = TKMenosIgual
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+                else:
+                    tk = TKSub
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
             elif c == '*':
                 proxC()
-                tk = TKProd
+                if c.isalpha():
+                    tk = TKPointer
+                elif c == '=':
+                    tk = TKAstIgual
+                else:
+                    tk = TKProd
                 print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
                 return
+            elif c == '/':
+                proxC()
+                if c == '=':
+                    lex += c
+                    proxC()
+                    tk = TKDivIgual
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+                else:
+                    tk = TKDiv
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+            elif c == '%':
+                proxC()
+                if c == '=':
+                    lex += c
+                    proxC()
+                    tk = TKPercIgual
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+                else:
+                    tk = TKPerc
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+            elif c == '!':
+                proxC()
+                if c == '=':
+                    lex += c
+                    proxC()
+                    tk = TKDiferente
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+                else:
+                    tk = TKExc
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+            elif c == '&':
+                proxC()
+                if c == '&':
+                    lex += c
+                    proxC()
+                    tk = TKAndAnd
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+                else:
+                    tk = TKAnd
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+            elif c == '|':
+                proxC()
+                if c == '|':
+                    lex += c
+                    proxC()
+                    tk = TKPipePipe
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+                else:
+                    tk = TKPipe
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+            elif c == '>':
+                proxC()
+                if c == '=':
+                    lex += c
+                    proxC()
+                    tk = TKMaiorIgual
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+                if c == '>':
+                    proxC()
+                    if c == '=':
+                        lex += c
+                        proxC()
+                        tk = TKShiftRightIgual
+                        print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                        return
+                    else:
+                        tk = TKShiftRight
+                        print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                        return
+                else:
+                    tk = TKMaior
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+            elif c == '<':
+                proxC()
+                if c == '=':
+                    lex += c
+                    proxC()
+                    tk = TKMenorIgual
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
+                if c == '<':
+                    proxC()
+                    if c == '=':
+                        lex += c
+                        proxC()
+                        tk = TKShiftLeftIgual
+                        print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                        return
+                    else:
+                        tk = TKShiftLeft
+                        print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                        return
+                else:
+                    tk = TKMenor
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    return
             elif c == '[':
                 proxC()
                 tk = TKAbreColchete
@@ -193,6 +354,16 @@ def getToken():
                 tk = TKVirgula
                 print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
                 return
+            elif c == '^':
+                proxC()
+                tk = TKCirc
+                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                return
+            elif c == '~':
+                proxC()
+                tk = TKTil
+                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                return
             elif c == ';':
                 proxC()
                 tk = TKPontoEVirgula
@@ -201,11 +372,6 @@ def getToken():
             elif c == ':':
                 proxC()
                 tk = TKDoisPontos
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
-                return
-            elif c == '-':
-                proxC()
-                tk = TKSub
                 print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
                 return
             elif c == '':
@@ -230,11 +396,22 @@ def getToken():
             #     tk = palavra_reservada(lex)
             #     return
             else:
-                lex = lex[:-1]
-                tk = palavra_reservada(lex)
-                # if tk == TKId:
-                #     lex = lex[:-1]
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                if c.isspace():
+                    lex = lex[:-1]
+                    tk = palavra_reservada(lex)
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    lex = ""
+                else:
+                    lex += c
+                
+                print('LEX PROBLEMATICO', lex)
+                print('C DEPOIS DO LEX PROBLEMATICO', c)
+                
+                proxC()
+
+                if lex:
+                    tk = palavra_reservada(lex)
+                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
                 return
 
 
