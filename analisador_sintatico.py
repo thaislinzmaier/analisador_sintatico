@@ -1,4 +1,4 @@
-DEBUG = {'lexico': False, 'pilha': False, 'token': True, 'char': True}
+DEBUG = {'lexico': False, 'pilha': False, 'token': True, 'char': False}
 
 # Definindo os tokens
 TKId = 1
@@ -162,7 +162,7 @@ def print_token_after(func):
 
 
 @print_token_after
-def get_next_token():  # TODO: Dá para simplificar alguns returns e tals
+def get_next_token():
     global token, current_char, lexico, curr_position
     estado = 0
     fim = False
@@ -481,6 +481,7 @@ def declaration_list():
             return True
 
 
+@possivelmente_vazio
 def declaration_list_aux():
     '''
     declaration_list_aux
@@ -488,10 +489,7 @@ def declaration_list_aux():
         | vazio
         ;
     '''
-    if volta_estado_se_der_errado(lambda: declaration()):
-        if declaration_list_aux():
-            return True
-    return True  # vazio
+    return declaration() and declaration_list_aux()
 
 
 def declaration():
@@ -798,7 +796,6 @@ def shift_expression_aux():
         ;
     '''
     if se_eh(TKShiftLeft, TKShiftRight):
-        get_next_token()
         if additive_expression():
             if shift_expression_aux():
                 return True
@@ -851,8 +848,7 @@ def multiplicative_expression_aux():
         | vazio
         ;
     '''
-    if token == TKProd or token == TKDiv or token == TKPerc:
-        get_next_token()
+    if se_eh(TKProd, TKDiv, TKPerc):
         if cast_expression():
             if multiplicative_expression_aux():
                 return True
