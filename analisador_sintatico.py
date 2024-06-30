@@ -1,64 +1,66 @@
-import string
+DEBUG = {'lexico': False, 'pilha': False, 'token': True}
 
 # Definindo os tokens
-TKId = 1 #ok
-TKVoid = 2 #ok
-TKInt = 3 #ok
-TKFloat = 4 #ok
-TKVirgula = 5 #ok
-TKDoisPontos = 6 #ok
-TKAbrePar = 7 #ok
-TKFechaPar = 8 #ok
-TKAtrib = 9 #ok
-TKPontoEVirgula = 10 #ok
-TKAbreChaves = 11 #ok
-TKFechaChaves = 12 #ok
-TKMais = 13 #ok
-TKDuploMais = 14 #ok
-TKProd = 15 #ok
-TKChar = 16 #ok
-TKSub = 17 #ok
-TKAbreColchete = 18 #ok
-TKFechaColchete = 19 #ok
-TKAtribMais = 20 #ok
-TKDouble = 21 #ok
-TKCteInt = 22 #ok
-TKElse = 23 #ok
-TKIf = 23 #ok
-TKFimArquivo = 24 #ok
-TKLong = 25 #ok
-TKUnsigned = 26 #ok
-TKPointer = 27 #ok
-TKArray = 28 #ERRO
-TKFor = 28 #ok
-TKDiv = 29 #ok
-TKPerc = 30 #ok
-TKMaior = 31 #ok
-TKMenor = 32 #ok
-TKIgual = 33 #ok
-TKDiferente = 34 #ok
-TKMenorIgual = 35 #ok
-TKMaiorIgual = 36 #ok
-TKAnd = 37 #ok
-TKPipe = 38 #ok
-TKCirc = 39 #ok
-TKShiftRight = 40 #ok
-TKShiftLeft = 41 #ok
-TKTil = 42 #ok
-TKAndAnd = 43 #ok
-TKPipePipe = 44 #ok
-TKExc = 45 #ok
-TKMenosIgual = 46 #ok
-TKAstIgual = 47 #ok
-TKDivIgual = 48 #ok
-TKPercIgual = 49 #ok
-TKShiftRightIgual = 50 #ok
-TKShiftLeftIgual = 51 #ok
-
+TKId = 1
+TKVoid = 2
+TKInt = 3
+TKFloat = 4
+TKVirgula = 5
+TKDoisPontos = 6
+TKAbrePar = 7
+TKFechaPar = 8
+TKAtrib = 9
+TKPontoEVirgula = 10
+TKAbreChaves = 11
+TKFechaChaves = 12
+TKMais = 13
+TKDuploMais = 14
+TKProd = 15
+TKChar = 16
+TKMenos = 17
+TKAbreColchete = 18
+TKFechaColchete = 19
+TKAtribMais = 20
+TKDouble = 21
+TKCteInt = 22
+TKElse = 23
+TKIf = 23
+TKFimArquivo = 24
+TKLong = 25
+TKUnsigned = 26
+TKPointer = 27
+TKArray = 28  # ERRO
+TKFor = 28
+TKDiv = 29
+TKPerc = 30
+TKMaior = 31
+TKMenor = 32
+TKIgual = 33
+TKDiferente = 34
+TKMenorIgual = 35
+TKMaiorIgual = 36
+TKAnd = 37
+TKPipe = 38
+TKCirc = 39
+TKShiftRight = 40
+TKShiftLeft = 41
+TKTil = 42
+TKAndAnd = 43
+TKPipePipe = 44
+TKExc = 45
+TKMenosIgual = 46
+TKAstIgual = 47
+TKDivIgual = 48
+TKPercIgual = 49
+TKShiftRightIgual = 50
+TKShiftLeftIgual = 51
+TKWhile = 52
+TKDo = 53
+TKDuploMenos = 54
 
 
 # Dicionário para mapear números de tokens para seus nomes correspondentes
-token_names = {  # Meter um enum pra tirar essas constantezada malucas talvez?
+token_names = {  # TODO: Transformar isso em um enum
     TKId: "TKId",
     TKVoid: "TKVoid",
     TKInt: "TKInt",
@@ -85,41 +87,44 @@ token_names = {  # Meter um enum pra tirar essas constantezada malucas talvez?
     TKVirgula: "TKVirgula",
     TKPontoEVirgula: "TKPontoEVirgula",
     TKDoisPontos: "TKDoisPontos",
-    TKSub: "TKSub",
+    TKMenos: "TKDuploMais",
     TKPointer: "TKPointer",
     TKArray: "TKArray",
     TKFor: "TKFor",
-    TKDiv : "TKDiv",
-    TKPerc : "TKPerc",
-    TKMaior : "TKMaior",
-    TKMenor : "TKMenor",
-    TKIgual : "TKIgual",
-    TKDiferente : "TKDiferente",
-    TKMenorIgual : "TKMenorIgual",
-    TKMaiorIgual : "TKMaiorIgual",
-    TKAnd : "TKAnd",
-    TKPipe : "TKPipe",
-    TKCirc : "TKCirc",
-    TKShiftRight : "TKShiftRight",
-    TKShiftLeft : "TKShiftLeft",
-    TKTil : "TKTil",
-    TKAndAnd : "TKAndAnd",
-    TKPipePipe : "TkPipePipe",
-    TKExc : "TKExc",
-    TKMenosIgual : "TKMenosIgual",
-    TKAstIgual : "TKAstIgual",
-    TKDivIgual : "TKDivIgual",
-    TKPercIgual : "TKPercIgual",
-    TKShiftRightIgual : "TKShiftRightIgual",
-    TKShiftLeftIgual : "TKShiftLeftIgual"
+    TKDiv: "TKDiv",
+    TKPerc: "TKPerc",
+    TKMaior: "TKMaior",
+    TKMenor: "TKMenor",
+    TKIgual: "TKIgual",
+    TKDiferente: "TKDiferente",
+    TKMenorIgual: "TKMenorIgual",
+    TKMaiorIgual: "TKMaiorIgual",
+    TKAnd: "TKAnd",
+    TKPipe: "TKPipe",
+    TKCirc: "TKCirc",
+    TKShiftRight: "TKShiftRight",
+    TKShiftLeft: "TKShiftLeft",
+    TKTil: "TKTil",
+    TKAndAnd: "TKAndAnd",
+    TKPipePipe: "TkPipePipe",
+    TKExc: "TKExc",
+    TKMenosIgual: "TKMenosIgual",
+    TKAstIgual: "TKAstIgual",
+    TKDivIgual: "TKDivIgual",
+    TKPercIgual: "TKPercIgual",
+    TKShiftRightIgual: "TKShiftRightIgual",
+    TKShiftLeftIgual: "TKShiftLeftIgual",
+    TKWhile: "TKWhile",
+    TKDo: "TKDo",
+    TKDuploMenos: "TKDuploMenos",
 }
 
 
-pos = 0
-tk = 0
-lex = ""
-arqin = None
-c = ''  # último caractere lido do arquivo
+curr_position = 0
+token = 0
+lexico = ""
+arquivo_entrada = None
+current_char = ''  # último caractere lido do arquivo
 
 
 lista_palavras_reservadas = {
@@ -129,6 +134,8 @@ lista_palavras_reservadas = {
     "char": TKChar,
     "double": TKDouble,
     "else": TKElse,
+    "while": TKWhile,
+    "do": TKDo,
     "for": TKFor,
     "if": TKIf,
     "long": TKLong,
@@ -136,418 +143,1228 @@ lista_palavras_reservadas = {
     "fimtabela": TKId,
 }
 
+
 def palavra_reservada(lex):
     return lista_palavras_reservadas.get(lex, TKId)
 
 
-def getToken():
-    global tk, c, lex, pos
+def get_nome_token(tk):
+    return token_names.get(tk, 'Desconhecido')
+
+
+def print_token_after(func):
+    def wrapper():
+        func()
+        if DEBUG['token']:
+            print(f"Token: {get_nome_token(token)}, lex: {lexico}")
+
+    return wrapper
+
+
+@print_token_after
+def get_next_token():
+    global token, current_char, lexico, curr_position
     estado = 0
     fim = False
-    posl = 0
-    lex = ''
+    lexico = ''
     while not fim:
-        print(c)
-        lex += c
-        print(lex)
+        lexico += current_char
+
+        if DEBUG['lexico']:
+            print(f'lexico: {lexico}')
+
         if estado == 0:
-            if c.isalpha() or c == '_':
+            if current_char.isalpha() or current_char == '_':
                 proxC()
                 estado = 1
-            elif c.isdigit():
-                while c.isdigit():
+            elif current_char.isdigit():
+                while current_char.isdigit():
                     proxC()
-                tk = TKCteInt
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKCteInt
                 return
-            elif c == '=':
+            elif current_char == '=':
                 proxC()
-                if c == '=':
-                    lex += c
+                if current_char == '=':
+                    lexico += current_char
                     proxC()
-                    tk = TKIgual
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKIgual
                     return
-                tk = TKAtrib
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKAtrib
                 return
-            elif c == '+':
+            elif current_char == '+':
                 proxC()
-                if c == '+':
-                    lex += c
+                if current_char == '+':
+                    lexico += current_char
                     proxC()
-                    tk = TKDuploMais
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKDuploMais
                     return
-                elif c == '=':
-                    lex += c
+                elif current_char == '=':
+                    lexico += current_char
                     proxC()
-                    tk = TKAtribMais
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKAtribMais
                     return
                 else:
-                    tk = TKMais
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKMais
                     return
-            elif c == '-':
+            elif current_char == '-':
                 proxC()
-                if c == '=':
-                    lex += c
+                if current_char == '-':
+                    lexico += current_char
                     proxC()
-                    tk = TKMenosIgual
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKDuploMenos
+                    return
+                elif current_char == '=':
+                    lexico += current_char
+                    proxC()
+                    token = TKMenosIgual
                     return
                 else:
-                    tk = TKSub
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKMenos
                     return
-            elif c == '*':
+            elif current_char == '*':
                 proxC()
-                if c.isalpha():
-                    tk = TKPointer
-                elif c == '=':
-                    tk = TKAstIgual
+                if current_char.isalpha():
+                    token = TKPointer
+                elif current_char == '=':
+                    token = TKAstIgual
                 else:
-                    tk = TKProd
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKProd
+                proxC()
                 return
-            elif c == '/':
+            elif current_char == '/':
                 proxC()
-                if c == '=':
-                    lex += c
+                if current_char == '=':
+                    lexico += current_char
                     proxC()
-                    tk = TKDivIgual
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKDivIgual
                     return
                 else:
-                    tk = TKDiv
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKDiv
                     return
-            elif c == '%':
+            elif current_char == '%':
                 proxC()
-                if c == '=':
-                    lex += c
+                if current_char == '=':
+                    lexico += current_char
                     proxC()
-                    tk = TKPercIgual
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKPercIgual
                     return
                 else:
-                    tk = TKPerc
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKPerc
                     return
-            elif c == '!':
+            elif current_char == '!':
                 proxC()
-                if c == '=':
-                    lex += c
+                if current_char == '=':
+                    lexico += current_char
                     proxC()
-                    tk = TKDiferente
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKDiferente
                     return
                 else:
-                    tk = TKExc
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKExc
                     return
-            elif c == '&':
+            elif current_char == '&':
                 proxC()
-                if c == '&':
-                    lex += c
+                if current_char == '&':
+                    lexico += current_char
                     proxC()
-                    tk = TKAndAnd
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKAndAnd
                     return
                 else:
-                    tk = TKAnd
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKAnd
                     return
-            elif c == '|':
+            elif current_char == '|':
                 proxC()
-                if c == '|':
-                    lex += c
+                if current_char == '|':
+                    lexico += current_char
                     proxC()
-                    tk = TKPipePipe
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKPipePipe
                     return
                 else:
-                    tk = TKPipe
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKPipe
                     return
-            elif c == '>':
+            elif current_char == '>':
                 proxC()
-                if c == '=':
-                    lex += c
+                if current_char == '=':
+                    lexico += current_char
                     proxC()
-                    tk = TKMaiorIgual
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKMaiorIgual
                     return
-                if c == '>':
+                if current_char == '>':
                     proxC()
-                    if c == '=':
-                        lex += c
+                    if current_char == '=':
+                        lexico += current_char
                         proxC()
-                        tk = TKShiftRightIgual
-                        print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                        token = TKShiftRightIgual
                         return
                     else:
-                        tk = TKShiftRight
-                        print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                        token = TKShiftRight
                         return
                 else:
-                    tk = TKMaior
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKMaior
                     return
-            elif c == '<':
+            elif current_char == '<':
                 proxC()
-                if c == '=':
-                    lex += c
+                if current_char == '=':
+                    lexico += current_char
                     proxC()
-                    tk = TKMenorIgual
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKMenorIgual
                     return
-                if c == '<':
+                if current_char == '<':
                     proxC()
-                    if c == '=':
-                        lex += c
+                    if current_char == '=':
+                        lexico += current_char
                         proxC()
-                        tk = TKShiftLeftIgual
-                        print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                        token = TKShiftLeftIgual
                         return
                     else:
-                        tk = TKShiftLeft
-                        print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                        token = TKShiftLeft
                         return
                 else:
-                    tk = TKMenor
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                    token = TKMenor
                     return
-            elif c == '[':
+            elif current_char == '[':
                 proxC()
-                tk = TKAbreColchete
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKAbreColchete
                 return
-            elif c == ']':
+            elif current_char == ']':
                 proxC()
-                tk = TKFechaColchete
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKFechaColchete
                 return
-            elif c == '(':
+            elif current_char == '(':
                 proxC()
-                tk = TKAbrePar
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKAbrePar
                 return
-            elif c == ')':
+            elif current_char == ')':
                 proxC()
-                tk = TKFechaPar
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKFechaPar
                 return
-            elif c == '{':
+            elif current_char == '{':
                 proxC()
-                tk = TKAbreChaves
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKAbreChaves
                 return
-            elif c == '}':
+            elif current_char == '}':
                 proxC()
-                tk = TKFechaChaves
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKFechaChaves
                 return
-            elif c == ',':
+            elif current_char == ',':
                 proxC()
-                tk = TKVirgula
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKVirgula
                 return
-            elif c == '^':
+            elif current_char == '^':
                 proxC()
-                tk = TKCirc
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKCirc
                 return
-            elif c == '~':
+            elif current_char == '~':
                 proxC()
-                tk = TKTil
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKTil
                 return
-            elif c == ';':
+            elif current_char == ';':
                 proxC()
-                tk = TKPontoEVirgula
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKPontoEVirgula
                 return
-            elif c == ':':
+            elif current_char == ':':
                 proxC()
-                tk = TKDoisPontos
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                token = TKDoisPontos
                 return
-            elif c == '':
-                tk = TKFimArquivo
-                print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+            elif current_char == '':
+                token = TKFimArquivo
                 fim = True
                 return
-            elif c in ' \n\t\r':
-                lex = lex[:-1]
+            elif current_char in ' \n\t\r':
+                lexico = lexico[:-1]
                 proxC()
             else:
-                print(f"Erro léxico: encontrou o caractere {c} ({ord(c)})")
-                while c != '\n':
+                print(
+                    f"Erro léxico: encontrou o caractere {current_char} ({ord(current_char)})"
+                )
+                while current_char != '\n':
                     proxC()
         elif estado == 1:
-            if c.isalnum() or c == '_':
+            if current_char.isalnum() or current_char == '_':
                 proxC()
-            # else:
-            #     print(lex)
-            #     lex = lex[:-1]
-            #     print(lex)
-            #     tk = palavra_reservada(lex)
-            #     return
             else:
-                if c.isspace():
-                    lex = lex[:-1]
-                    tk = palavra_reservada(lex)
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
-                    lex = ""
-                else:
-                    lex += c
-                
-                print('LEX PROBLEMATICO', lex)
-                print('C DEPOIS DO LEX PROBLEMATICO', c)
-                
-                proxC()
-
-                if lex:
-                    tk = palavra_reservada(lex)
-                    print(f"Token: {token_names.get(tk, 'Desconhecido')}, lex: {lex}")
+                lexico = lexico[:-1]
+                token = palavra_reservada(lexico)
                 return
+
+
+pilha = []
+
+
+def empilha():
+    global current_char, pilha, token
+    config = {'arqin_pos': arquivo_entrada.tell(), 'c': current_char, 'tk': token}
+    pilha.append(config)
+    if DEBUG['pilha']:
+        print(f'/\ Empilhando {config}')
+
+
+def desempilha_sem_restaurar():
+    return pilha.pop()
+
+
+def desempilha():
+    global current_char, token
+    config = desempilha_sem_restaurar()
+    if DEBUG['pilha']:
+        print(f'\/ Restaurando {config}')
+    arquivo_entrada.seek(config['arqin_pos'])
+    current_char = config['c']
+    token = config['tk']
+
+
+def volta_estado_se_der_errado(callable_bool):
+    empilha()
+    resultado = callable_bool()
+    if resultado:
+        desempilha_sem_restaurar()
+    else:
+        desempilha()
+    return resultado
+
+
+def se_eh(*tokens):
+    '''
+    Testa se eh o token e já consome
+    '''
+    if era_algum := token in tokens:
+        get_next_token()
+    return era_algum
+
+
+def possivelmente_vazio(func):
+    def wrapper_func():
+        volta_estado_se_der_errado(func)
+        return True
+
+    return wrapper_func
 
 
 def proxC():
-    global c
-    c = arqin.read(1)
-    if not c:
-        c = ''
-    print(f"Caractere lido: '{c}'")
+    global current_char
+    current_char = arquivo_entrada.read(1)
+    if not current_char:
+        current_char = ''
+    # print(f"Caractere lido: '{c}'")
 
 
-def E():
-    if F():
-        if E2():
+def compound_statement():  # Medo
+    '''
+    compound_statement
+        : '{' '}'
+        | '{' declaration_list '}'
+        | '{' declaration_list statement_list '}'
+        | '{' statement_list '}'
+        ;
+    '''
+    if se_eh(TKAbreChaves):
+        if se_eh(TKFechaChaves):
             return True
-    return False
-
-
-def E2():
-    global tk
-    if tk == TKMais:
-        getToken()
-        if F():
-            if E2():
+        elif volta_estado_se_der_errado(lambda: declaration_list()):
+            if se_eh(TKFechaChaves):
                 return True
-        return False
-    return True
+            if statement_list():
+                if se_eh(TKFechaChaves):
+                    return True
+        elif statement_list() and se_eh(TKFechaChaves):
+            return True
 
 
-def F():
-    global tk
-    if tk == TKId or tk == TKCteInt:
-        getToken()
+def declaration_list():
+    '''
+    declaration_list
+        : declaration declaration_list_aux
+        ;
+    '''
+    if declaration():
+        if declaration_list_aux():
+            return True
+
+
+def declaration_list_aux():
+    '''
+    declaration_list_aux
+        | declaration declaration_list_aux
+        | vazio
+        ;
+    '''
+    if volta_estado_se_der_errado(lambda: declaration()):
+        if declaration_list_aux():
+            return True
+    return True  # vazio
+
+
+def declaration():
+    '''
+    declaration
+        : declaration_specifiers ';'
+        | declaration_specifiers init_declarator_list ';'
+        ;
+    '''
+    if declaration_specifiers():
+        if se_eh(TKPontoEVirgula):
+            return True
+        elif init_declarator_list() and se_eh(TKPontoEVirgula):
+            return True
+
+
+def init_declarator_list():
+    '''
+    init_declarator
+        : declarator
+        | declarator '=' initializer
+        ;
+    '''
+    if declarator():
+        if se_eh(TKAtrib):
+            if initializer():
+                return True
+        else:
+            return True
+
+
+def initializer():
+    '''
+    initializer
+        : assignment_expression
+        // | '{' initializer_list '}'
+        // | '{' initializer_list ',' '}'
+        ;
+    '''
+    return assignment_expression()
+
+
+def assignment_operator():
+    '''
+    assignment_operator
+        : '='
+        | MUL_ASSIGN
+        | DIV_ASSIGN
+        | MOD_ASSIGN
+        | ADD_ASSIGN
+        | SUB_ASSIGN
+        | LEFT_ASSIGN
+        | RIGHT_ASSIGN
+        // | AND_ASSIGN
+        // | XOR_ASSIGN
+        // | OR_ASSIGN
+        ;
+    '''
+    return se_eh(
+        TKAtrib,
+        TKAstIgual,
+        TKDivIgual,
+        TKPercIgual,
+        TKAtribMais,
+        TKMenosIgual,
+        TKShiftLeftIgual,
+        TKShiftRightIgual,
+    )
+
+
+# ---------- Expressions rabbit hole
+def assignment_expression():
+    '''
+    assignment_expression
+        : conditional_expression
+        | unary_expression assignment_operator assignment_expression
+        ;
+    '''
+
+    def procura_atrib():
+        if unary_expression():
+            if assignment_operator():
+                if assignment_expression():
+                    return True
+
+    if volta_estado_se_der_errado(procura_atrib):
+        return True
+    elif conditional_expression():
+        return True
+
+
+def conditional_expression():
+    '''
+    conditional_expression
+        : logical_or_expression
+        |// logical_or_expression '?' expression ':' conditional_expression
+        ;
+    '''
+    if logical_or_expression():
+        return True
+
+
+def logical_or_expression():
+    '''
+    logical_or_expression
+        : logical_and_expression logical_or_expression_aux
+        ;
+    '''
+    if logical_and_expression():
+        if logical_or_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def logical_or_expression_aux():
+    '''
+    logical_or_expression_aux
+        | OR_OP logical_and_expression logical_or_expression_aux
+        | vazio
+        ;
+    '''
+    if se_eh(TKPipePipe):
+        if logical_and_expression():
+            if logical_or_expression_aux():
+                return True
+
+
+def logical_and_expression():
+    '''
+    logical_and_expression
+        : inclusive_or_expression logical_and_expression_aux
+        ;
+    '''
+    if inclusive_or_expression():
+        if logical_and_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def logical_and_expression_aux():
+    '''
+    logical_or_expression_aux
+        | OR_OP logical_and_expression logical_or_expression_aux
+        | vazio
+        ;
+    '''
+    if se_eh(TKAndAnd):
+        if inclusive_or_expression():
+            if logical_and_expression_aux():
+                return True
+
+
+def inclusive_or_expression():
+    '''
+    inclusive_or_expression
+        : exclusive_or_expression inclusive_or_expression_aux
+        ;
+    '''
+    if exclusive_or_expression():
+        if inclusive_or_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def inclusive_or_expression_aux():
+    '''
+    inclusive_or_expression_aux
+        | '|' exclusive_or_expression inclusive_or_expression_aux
+        | vazio
+        ;
+    '''
+    if se_eh(TKPipe):
+        if exclusive_or_expression():
+            if inclusive_or_expression_aux():
+                return True
+
+
+def exclusive_or_expression():
+    '''
+    exclusive_or_expression
+        : and_expression exclusive_or_expression_aux
+        ;
+    '''
+    if and_expression():
+        if exclusive_or_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def exclusive_or_expression_aux():
+    '''
+    exclusive_or_expression_aux
+        : '^' and_expression exclusive_or_expression_aux
+        | vazio
+        ;
+    '''
+    if se_eh(TKCirc):
+        if and_expression():
+            if exclusive_or_expression_aux():
+                return True
+
+
+def and_expression():
+    '''
+    and_expression
+        : equality_expression and_expression_aux
+        ;
+    '''
+    if equality_expression():
+        if and_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def and_expression_aux():
+    '''
+    and_expression_aux
+        | '&' equality_expression and_expression_aux
+        | vazio
+        ;
+    '''
+    if se_eh(TKAnd):
+        if equality_expression():
+            if and_expression_aux():
+                return True
+
+
+def equality_expression():
+    '''
+    equality_expression
+        : relational_expression equality_expression_aux
+        ;
+    '''
+    if relational_expression():
+        if equality_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def equality_expression_aux():
+    '''
+    equality_expression_aux
+        | EQ_OP relational_expression equality_expression_aux
+        | NE_OP relational_expression equality_expression_aux
+        | vazio
+        ;
+    '''
+    if se_eh(TKIgual, TKDiferente):
+        if relational_expression():
+            if equality_expression_aux():
+                return True
+
+
+def relational_expression():
+    '''
+    relational_expression
+        : shift_expression relational_expression_aux
+        ;
+    '''
+    if shift_expression():
+        if relational_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def relational_expression_aux():
+    '''
+    relational_expression_aux
+        | '<' shift_expression relational_expression_aux
+        | '>' shift_expression relational_expression_aux
+        | LE_OP shift_expression relational_expression_aux
+        | GE_OP shift_expression relational_expression_aux
+        | vazio
+        ;
+    '''
+    if (
+        token == TKMenor
+        or token == TKMaior
+        or token == TKMenorIgual
+        or token == TKMaiorIgual
+    ):
+        get_next_token()
+        if shift_expression():
+            if relational_expression_aux():
+                return True
+
+
+def shift_expression():
+    '''
+    shift_expression
+        : additive_expression shift_expression_aux
+        ;
+    '''
+    if additive_expression():
+        if shift_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def shift_expression_aux():
+    '''
+    shift_expression_aux
+        | LEFT_OP additive_expression shift_expression_aux
+        | RIGHT_OP additive_expression shift_expression_aux
+        | vazio
+        ;
+    '''
+    if token == TKShiftLeft or token == TKShiftRight:
+        get_next_token()
+        if additive_expression():
+            if shift_expression_aux():
+                return True
+
+
+def additive_expression():
+    '''
+    additive_expression
+        : multiplicative_expression additive_expression_aux
+        ;
+    '''
+    if multiplicative_expression():
+        if additive_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def additive_expression_aux():
+    '''
+    additive_expression_aux
+        | '+' multiplicative_expression additive_expression_aux
+        | '-' multiplicative_expression additive_expression_aux
+        | vazio
+        ;
+    '''
+    if token == TKMais or token == TKMenos:
+        get_next_token()
+        if multiplicative_expression():
+            if additive_expression_aux():
+                return True
+
+
+def multiplicative_expression():
+    '''
+    multiplicative_expression
+        : cast_expression multiplicative_expression_aux
+        ;
+    '''
+    if cast_expression():
+        if multiplicative_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def multiplicative_expression_aux():
+    '''
+    multiplicative_expression_aux
+        | '*' cast_expression multiplicative_expression_aux
+        | '/' cast_expression multiplicative_expression_aux
+        | '%' cast_expression multiplicative_expression_aux
+        | vazio
+        ;
+    '''
+    if token == TKProd or token == TKDiv or token == TKPerc:
+        get_next_token()
+        if cast_expression():
+            if multiplicative_expression_aux():
+                return True
+
+
+def cast_expression():
+    '''
+    cast_expression // Simplificado pois não há a necessidade de casting
+        : unary_expression
+        | '(' type_name ')' cast_expression
+        ;
+    '''
+    return unary_expression()
+
+
+def unary_expression():
+    '''
+    unary_expression
+            : postfix_expression
+        | INC_OP unary_expression
+        | DEC_OP unary_expression
+        | unary_operator cast_expression
+        //| SIZEOF unary_expression
+        //| SIZEOF '(' type_name ')'
+        ;
+    '''
+    if se_eh(TKDuploMais, TKDuploMenos):
+        if unary_expression():
+            return True
+    elif volta_estado_se_der_errado(lambda: unary_operator()):  # Precisa?
+        if cast_expression():
+            return True
+    elif postfix_expression():
+        return True
+
+
+def unary_operator():
+    '''
+    unary_operator
+        : '&'
+        | '*'
+        | '+'
+        | '-'
+        | '~'
+        | '!'
+        ;
+    '''
+    return se_eh(
+        TKAnd,
+        TKProd,
+        TKMais,
+        TKMenos,
+        TKTil,
+        TKExc,
+    )
+
+
+def postfix_expression():
+    '''
+    postfix_expression
+        : primary_expression postfix_expression_aux
+        ;
+    '''
+    if primary_expression():
+        if postfix_expression_aux():
+            return True
+
+
+@possivelmente_vazio
+def postfix_expression_aux():
+    '''
+    postfix_expression_aux
+        | '[' expression ']'  postfix_expression_aux
+        | '(' ')' postfix_expression_aux
+        | '(' argument_expression_list ')' postfix_expression_aux
+        // | '.' IDENTIFIER postfix_expression_aux
+        // | PTR_OP IDENTIFIER postfix_expression_aux
+        | INC_OP postfix_expression_aux
+        | DEC_OP postfix_expression_aux
+        ;
+    '''
+    if se_eh(TKAbreColchete):
+        if expression():
+            if se_eh(TKFechaColchete):
+                if postfix_expression_aux():
+                    return True
+    if se_eh(TKDuploMais, TKDuploMenos):
+        if postfix_expression_aux():
+            return True
+    if se_eh(TKAbreChaves):
+        if se_eh(TKAbreChaves):
+            if postfix_expression_aux():
+                return True
+        elif argument_expression_list():
+            if se_eh(TKAbreChaves):
+                if postfix_expression_aux():
+                    return True
+
+
+def argument_expression_list():
+    '''
+    argument_expression_list
+        : assignment_expression argument_expression_list_aux
+        ;
+    '''
+    if assignment_expression():
+        if argument_expression_list_aux():
+            return True
+
+
+@possivelmente_vazio
+def argument_expression_list_aux():
+    '''
+    argument_expression_list_aux
+        | ',' assignment_expression argument_expression_list_aux
+        | vazio
+        ;
+    '''
+    if se_eh(TKVirgula):
+        if assignment_expression():
+            if argument_expression_list_aux():
+                return
+
+
+def primary_expression():
+    '''
+    primary_expression
+        : IDENTIFIER
+        | CONSTANT
+        //| STRING_LITERAL
+        | '(' expression ')'
+        ;
+    '''
+    if se_eh(TKAbrePar):
+        if expression():
+            if se_eh(TKFechaPar):
+                return True
+    elif se_eh(TKCteInt) or se_eh(TKId):
+        return True
+
+
+# ----------
+
+
+def statement_list():
+    '''
+    statement_list
+        : statement statement_list_aux
+        ;
+    '''
+    return statement() and statement_list_aux()
+
+
+def statement_list_aux():
+    '''
+    statement_list_aux
+        : statement statement_list_aux
+        | vazio
+        ;
+    '''
+    # TODO usar volta_estado_se_der_errado
+    empilha()
+    if statement() and statement_list_aux():
+        desempilha_sem_restaurar()
         return True
     else:
-        print(f"Esperava um identificador ou constante. Encontrou {lex}")
-        return False
-
-
-def DecFunc():
-    if Tipo():
-        if tk == TKId:
-            getToken()
-            if tk == TKAbrePar:
-                getToken()
-                if tk == TKFechaPar:
-                    getToken()
-                    if ComComp():
-                        return True
-                    return False
-                else:
-                    print(f"Esperava ')'. Encontrou {lex}")
-                    return False
-            return False
-        return False
-    return False
-
-
-def Tipo():
-    global tk
-    print('TK', tk)
-    if tk == TKInt or tk == TKFloat or tk == TKVoid:
-        getToken()
-        return True
-    return False
-
-
-def ComComp():
-    global tk
-    print("Entrei no Comando Composto")
-    if tk == TKAbreChaves:
-        getToken()
-        print("Abrechaves")
-        if Lista():
-            if tk == TKFechaChaves:
-                getToken()
-                return True
-            return False
-        return False
-    return False
-
-
-def Lista():
-    global tk
-    print(f"Entrei na lista. token={tk}")
-    if tk == TKFechaChaves:
-        return True
-    if ComExp():
-        print("Reconheci comando expressão")
-        if Lista():
-            return True
-        return False
-    if DecVar():
-        if Lista():
-            return True
-        return False
+        desempilha()
     return True
 
 
-def ComExp():
-    print("Entrei no ComExp")
-    if E():
-        if tk == TKPontoEVirgula:
-            getToken()
+def statement():
+    '''
+    statement
+        : // labeled_statement
+        | iteration_statement
+        | selection_statement
+        | expression_statement
+        | compound_statement
+        | // jump_statement
+        ;
+    '''
+    # if volta_estado_se_der_errado(lambda: iteration_statement()):
+    #     return True
+    # elif volta_estado_se_der_errado(lambda: selection_statement()):
+    #     return True
+    # elif volta_estado_se_der_errado(lambda: expression_statement()):
+    #     return True
+    # elif volta_estado_se_der_errado(lambda: compound_statement()):
+    #     return True
+    if (
+        iteration_statement()
+        or selection_statement()
+        or expression_statement()
+        or compound_statement()
+    ):
+        return True
+
+
+def expression_statement():
+    '''
+    expression_statement
+        : ';'
+        | expression ';'
+        ;
+    '''
+    if se_eh(TKPontoEVirgula):
+        return True
+    if expression() and se_eh(TKPontoEVirgula):
+        return True
+
+
+def expression():
+    '''
+    expression
+        : assignment_expression expression_aux
+        ;
+    '''
+    if assignment_expression():
+        if expression_aux():
             return True
-        return False
-    return False
 
 
-def DecVar():
-    if Tipo():
-        if tk == TKId:
-            getToken()
-            if tk == TKPontoEVirgula:
-                getToken()
+@possivelmente_vazio
+def expression_aux():
+    '''
+    expression_aux
+        : ',' assignment_expression expression_aux
+        | vazio
+        ;
+    '''
+    if se_eh(TKVirgula):
+        if assignment_expression():
+            if expression_aux():
                 return True
-            return False
-        return False
-    return False
+
+
+def selection_statement():
+    '''
+    selection_statement
+        : IF '(' expression ')' statement
+        | IF '(' expression ')' statement ELSE statement
+        ;
+    '''
+    if (
+        se_eh(TKIf)
+        and se_eh(TKAbrePar)
+        and expression()
+        and se_eh(TKFechaPar)
+        and statement()
+    ):
+        if se_eh(TKElse) and statement():
+            return True
+        return True
+
+
+def iteration_statement():
+    '''
+    iteration_statement
+        : WHILE '(' expression ')' statement
+        | DO statement WHILE '(' expression ')' ';'
+        | FOR '(' expression_statement expression_statement ')' statement
+        | FOR '(' expression_statement expression_statement expression ')' statement
+        ;
+    '''
+    if (
+        se_eh(TKWhile)
+        and se_eh(TKAbrePar)
+        and expression()
+        and se_eh(TKFechaPar)
+        and statement()
+    ):
+        return True
+    if se_eh(TKDo):
+        if statement() and se_eh(TKWhile):
+            if se_eh(TKAbrePar):
+                if expression() and se_eh(TKFechaPar):
+                    if se_eh(TKPontoEVirgula):
+                        return True
+    if (
+        se_eh(TKFor)
+        and se_eh(TKAbrePar)
+        and expression_statement()
+        and expression_statement()
+    ):
+        if volta_estado_se_der_errado(
+            lambda: se_eh(TKFechaPar) and statement()
+        ):  # Certamente tem um jeito menos preguiçoso de fazer essa parte
+            return True
+        elif expression() and se_eh(TKFechaPar) and statement():
+            return True
+
+
+def function_definition():
+    '''
+    function_definition
+        //: declaration_specifiers declarator declaration_list compound_statement
+        | declaration_specifiers declarator compound_statement
+        //| declarator declaration_list compound_statement
+        //| declarator compound_statement
+        ;
+    '''
+    if declaration_specifiers() and declarator() and compound_statement():
+        return True
+
+
+# --------- Tipos
+def declaration_specifiers():
+    '''
+    declaration_specifiers
+        | type_specifier
+        | type_specifier declaration_specifiers
+        ;
+    '''
+    if type_specifier():
+        empilha()
+        if declaration_specifiers():
+            desempilha_sem_restaurar()
+        else:
+            desempilha()
+        return True
+
+
+# def abstract_declarator():
+#     if tk == TKPointer:
+#         return True
+#     | direct_abstract_declarator
+#     | pointer direct_abstract_declarator
+#     ;
+
+
+def type_specifier():
+    '''
+    type_specifier
+        : VOID
+        | CHAR
+        | INT
+        | LONG
+        | FLOAT
+        | DOUBLE
+        | UNSIGNED
+    '''
+    return se_eh(
+        TKVoid,
+        TKChar,
+        TKInt,
+        TKLong,
+        TKFloat,
+        TKDouble,
+        TKUnsigned,
+    )
+
+
+def specifier_qualifier_list():
+    '''
+    specifier_qualifier_list
+        : type_specifier specifier_qualifier_list
+        | type_specifier
+    '''
+    global token
+    print('TODOTODOTODOTODOTODO', token)
+
+
+# -------------- Declarators
+def direct_declarator():
+    '''
+    direct_declarator
+        : IDENTIFIER direct_declarator_aux
+        | '(' declarator ')' direct_declarator_aux
+    '''
+    if se_eh(TKId):
+        if direct_declarator_aux():
+            return True
+    elif (
+        se_eh(TKAbrePar)
+        and declarator()
+        and se_eh(TKFechaPar)
+        and direct_declarator_aux()
+    ):
+        return True
+
+
+@possivelmente_vazio
+def direct_declarator_aux():
+    '''
+    direct_declarator_aux
+        | '[' constant_expression ']' direct_declarator_aux
+        | '[' ']' direct_declarator_aux
+        | '(' parameter_type_list ')' direct_declarator_aux
+        | '(' identifier_list ')' direct_declarator_aux
+        | '(' ')' direct_declarator_aux
+        | vazio
+    '''
+    if se_eh(TKAbreColchete):
+        if se_eh(TKCteInt):
+            pass
+        if se_eh(TKFechaColchete):
+            if direct_declarator_aux():
+                return True
+    if se_eh(TKAbrePar):
+        # TODO usar volta_estado_se_der_errado
+        empilha()
+        if parameter_type_list():
+            desempilha_sem_restaurar()
+        else:
+            desempilha()
+            empilha()
+            if identifier_list():
+                desempilha_sem_restaurar()
+            else:
+                desempilha()
+        if se_eh(TKFechaPar):
+            if direct_declarator_aux():
+                return True
+
+
+def identifier_list():
+    '''
+    identifier_list
+        : IDENTIFIER identifier_list_aux
+        ;
+    '''
+    if se_eh(TKId):
+        if identifier_list_aux():
+            return True
+
+
+@possivelmente_vazio
+def identifier_list_aux():
+    '''
+    identifier_list_aux
+        | ',' IDENTIFIER identifier_list_aux
+        | vazio
+        ;
+    '''
+    if se_eh(TKVirgula) and se_eh(TKId) and identifier_list_aux():
+        return True
+
+
+def parameter_type_list():
+    '''
+    Teria mais coisas aqui se fosse uma gramatica real
+    parameter_type_list
+        : parameter_list
+        ;
+    '''
+    return parameter_list()
+
+
+def parameter_list():
+    '''
+    parameter_list
+        : parameter_declaration parameter_list_aux
+        ;
+    '''
+    return parameter_declaration() and parameter_list_aux()
+
+
+@possivelmente_vazio
+def parameter_list_aux():
+    '''
+    parameter_list_aux
+        : ',' parameter_declaration parameter_list_aux
+        | vazio
+    ;
+    '''
+    return se_eh(TKVirgula) and parameter_declaration() and parameter_list_aux()
+
+
+def parameter_declaration():
+    '''
+    parameter_declaration
+        // : declaration_specifiers declarator
+        // | declaration_specifiers abstract_declarator
+        | declaration_specifiers
+        ;
+    '''
+    return declaration_specifiers()
+
+
+def pointer():
+    return se_eh(TKPointer)
+
+
+def declarator():
+    '''
+    declarator
+        : pointer direct_declarator
+        | direct_declarator
+        ;
+    '''
+    if volta_estado_se_der_errado(lambda: pointer()):
+        pass
+    return direct_declarator()
 
 
 def main():
-    global arqin
-    arqin = open("arquivo.txt", "r")
-    if not arqin:
+    global arquivo_entrada
+    arquivo_entrada = open("arquivo.txt", "r")
+    if not arquivo_entrada:
         print("Erro na abertura do fonte.")
         return
 
     proxC()  # lê primeiro caractere do arquivo
-    getToken()  # lê primeiro token
-    if DecFunc():
+    get_next_token()  # lê primeiro token
+    if function_definition():
         print("Reconheceu OK")
     else:
-        print(c)
+        print(current_char)
         print("Erro sintático")
-    arqin.close()
+    arquivo_entrada.close()
 
 
 if __name__ == "__main__":

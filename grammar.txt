@@ -1,0 +1,333 @@
+function_definition
+	//: declaration_specifiers declarator declaration_list compound_statement
+	| declaration_specifiers declarator compound_statement
+	//| declarator declaration_list compound_statement
+	//| declarator compound_statement
+	;
+    
+compound_statement
+    : '{' '}'
+    //| '{' statement_list '}'
+    //| '{' declaration_list '}'
+    | '{' declaration_list statement_list '}'
+    ;
+
+declaration_list
+	: declaration declaration_list_aux
+	;
+
+declaration_list_aux
+	| declaration declaration_list_aux
+    | vazio
+	;
+        
+declaration
+	: declaration_specifiers ';'
+	| declaration_specifiers init_declarator_list ';'
+	;
+
+init_declarator
+	: declarator
+	| declarator '=' initializer
+	;
+    
+initializer
+    : assignment_expression
+    // | '{' initializer_list '}'
+    // | '{' initializer_list ',' '}'
+    ;
+
+statement_list OK
+	: statement statement_list_aux
+	;
+
+statement_list_aux OK
+	: statement statement_list_aux
+    | vazio
+	;
+
+statement
+	: // labeled_statement
+	| compound_statement
+	| expression_statement
+	| selection_statement
+	| iteration_statement
+	| // jump_statement
+	;
+
+expression_statement
+	: ';'
+	| expression ';'
+	;
+
+expression
+	: assignment_expression expression_aux
+	;
+
+expression_aux
+    : ',' assignment_expression expression_aux
+    | vazio
+    ;
+
+
+assignment_expression
+    : conditional_expression
+    | unary_expression assignment_operator assignment_expression
+    ;
+
+conditional_expression
+    : logical_or_expression
+    |// logical_or_expression '?' expression ':' conditional_expression
+    ;
+
+logical_or_expression
+    : logical_and_expression logical_or_expression_aux
+    ;
+    
+logical_or_expression_aux
+    | OR_OP logical_and_expression logical_or_expression_aux
+    | vazio
+    ;
+
+logical_and_expression
+	: inclusive_or_expression logical_and_expression_aux
+	;
+
+logical_and_expression_aux
+	| AND_OP inclusive_or_expression logical_and_expression_aux
+    | vazio
+	;
+
+inclusive_or_expression
+	: exclusive_or_expression inclusive_or_expression_aux
+	;
+
+inclusive_or_expression_aux
+	| '|' exclusive_or_expression inclusive_or_expression_aux
+    | vazio
+	;
+
+exclusive_or_expression
+	: and_expression exclusive_or_expression_aux
+	;
+
+exclusive_or_expression_aux
+	: '^' and_expression exclusive_or_expression_aux
+    | vazio
+	;
+
+and_expression
+	: equality_expression and_expression_aux
+	;
+
+and_expression_aux
+	| '&' equality_expression and_expression_aux
+    | vazio
+	;
+
+equality_expression
+	: relational_expression equality_expression_aux
+	;
+    
+equality_expression_aux
+	| EQ_OP relational_expression equality_expression_aux
+	| NE_OP relational_expression equality_expression_aux
+    | vazio
+	;
+
+relational_expression
+	: shift_expression relational_expression_aux
+	;
+
+relational_expression_aux
+	| '<' shift_expression relational_expression_aux
+	| '>' shift_expression relational_expression_aux
+	| LE_OP shift_expression relational_expression_aux
+	| GE_OP shift_expression relational_expression_aux
+    | vazio
+	;
+
+shift_expression
+	: additive_expression shift_expression_aux
+	;
+    
+shift_expression_aux
+	| LEFT_OP additive_expression shift_expression_aux
+	| RIGHT_OP additive_expression shift_expression_aux
+    | vazio
+	;
+
+additive_expression
+	: multiplicative_expression additive_expression_aux
+	;
+
+additive_expression_aux
+	| '+' multiplicative_expression additive_expression_aux
+	| '-' multiplicative_expression additive_expression_aux
+    | vazio
+	;
+
+multiplicative_expression
+	: cast_expression multiplicative_expression_aux
+	;
+
+multiplicative_expression_aux
+    | '*' cast_expression multiplicative_expression_aux
+    | '/' cast_expression multiplicative_expression_aux
+    | '%' cast_expression multiplicative_expression_aux
+    | vazio
+    ;
+
+cast_expression // Simplificado pois não há a necessidade de casting
+	: unary_expression
+	//| '(' type_name ')' cast_expression
+	;
+
+unary_expression
+	: postfix_expression
+	| INC_OP unary_expression
+	| DEC_OP unary_expression
+	| unary_operator cast_expression
+	//| SIZEOF unary_expression
+	//| SIZEOF '(' type_name ')'
+	;
+
+postfix_expression
+	: primary_expression postfix_expression_aux
+	;
+
+postfix_expression_aux
+	| '[' expression ']'  postfix_expression_aux
+	| '(' ')' postfix_expression_aux
+	| '(' argument_expression_list ')' postfix_expression_aux
+	// | '.' IDENTIFIER postfix_expression_aux
+	// | PTR_OP IDENTIFIER postfix_expression_aux
+	| INC_OP postfix_expression_aux
+	| DEC_OP postfix_expression_aux
+    | vazio
+	;
+
+argument_expression_list
+	: assignment_expression argument_expression_list_aux
+	;
+
+argument_expression_list_aux
+	| ',' assignment_expression argument_expression_list_aux
+    | vazio
+	;
+    
+primary_expression
+	: IDENTIFIER
+	| CONSTANT
+	//| STRING_LITERAL
+	| '(' expression ')'
+	;
+
+unary_operator
+	: '&'
+	| '*'
+	| '+'
+	| '-'
+	| '~'
+	| '!'
+	;
+
+assignment_operator
+	: '='
+	| MUL_ASSIGN
+	| DIV_ASSIGN
+	| MOD_ASSIGN
+	| ADD_ASSIGN
+	| SUB_ASSIGN
+	| LEFT_ASSIGN
+	| RIGHT_ASSIGN
+	//| AND_ASSIGN
+	//| XOR_ASSIGN
+	//| OR_ASSIGN
+	;
+
+
+selection_statement
+    : IF '(' expression ')' statement
+    | IF '(' expression ')' statement ELSE statement
+    ;
+    
+iteration_statement
+	: WHILE '(' expression ')' statement
+	| DO statement WHILE '(' expression ')' ';'
+	| FOR '(' expression_statement expression_statement ')' statement
+	| FOR '(' expression_statement expression_statement expression ')' statement
+	;
+
+
+declarator OK
+	: pointer direct_declarator
+	| direct_declarator
+	;
+
+declaration_list
+	: declaration
+	| declaration_list declaration
+	;
+
+direct_declarator OK
+	: IDENTIFIER direct_declarator_aux
+	| '(' declarator ')' direct_declarator_aux
+
+direct_declarator_aux OK
+	| '[' constant_expression ']' direct_declarator_aux
+	| '[' ']' direct_declarator_aux
+	| '(' parameter_type_list ')' direct_declarator_aux
+	| '(' identifier_list ')' direct_declarator_aux
+	| '(' ')' direct_declarator_aux
+    | vazio
+
+parameter_type_list 
+	: parameter_list 
+	; // Teria mais coisas aqui se fosse uma gramatica real
+
+parameter_list OK
+	: parameter_declaration parameter_list_aux
+	;
+
+parameter_list_aux OK
+	: ',' parameter_declaration parameter_list_aux
+    | vazio
+	;
+
+parameter_declaration
+	// : declaration_specifiers declarator
+	// | declaration_specifiers abstract_declarator
+	| declaration_specifiers
+	;
+
+identifier_list
+	: IDENTIFIER identifier_list_aux
+	;
+
+identifier_list_aux
+	| ',' IDENTIFIER identifier_list_aux
+    | vazio
+	;
+--------
+
+pointer
+    : '*'
+
+declarator
+    : pointer direct_declarator
+    | direct_declarator
+
+declaration_specifiers
+    | type_specifier
+    | type_specifier declaration_specifiers
+    ;
+
+type_specifier
+    : VOID
+    | CHAR
+    | INT
+    | LONG
+    | FLOAT
+    | DOUBLE
+    | UNSIGNED
