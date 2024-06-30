@@ -1,4 +1,4 @@
-DEBUG = {'lexico': False, 'pilha': False, 'token': True}
+DEBUG = {'lexico': False, 'pilha': False, 'token': True, 'char': True}
 
 # Definindo os tokens
 TKId = 1
@@ -29,7 +29,7 @@ TKFimArquivo = 24
 TKLong = 25
 TKUnsigned = 26
 TKPointer = 27
-TKArray = 28  # ERRO
+TKArray = 28
 TKFor = 28
 TKDiv = 29
 TKPerc = 30
@@ -124,7 +124,7 @@ curr_position = 0
 token = 0
 lexico = ""
 arquivo_entrada = None
-current_char = ''  # último caractere lido do arquivo
+current_char = ''
 
 
 lista_palavras_reservadas = {
@@ -162,7 +162,7 @@ def print_token_after(func):
 
 
 @print_token_after
-def get_next_token():
+def get_next_token():  # TODO: Dá para simplificar alguns returns e tals
     global token, current_char, lexico, curr_position
     estado = 0
     fim = False
@@ -175,124 +175,124 @@ def get_next_token():
 
         if estado == 0:
             if current_char.isalpha() or current_char == '_':
-                proxC()
+                proximo_char()
                 estado = 1
             elif current_char.isdigit():
                 while current_char.isdigit():
-                    proxC()
+                    proximo_char()
                 token = TKCteInt
                 return
             elif current_char == '=':
-                proxC()
+                proximo_char()
                 if current_char == '=':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKIgual
                     return
                 token = TKAtrib
                 return
             elif current_char == '+':
-                proxC()
+                proximo_char()
                 if current_char == '+':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKDuploMais
                     return
                 elif current_char == '=':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKAtribMais
                     return
                 else:
                     token = TKMais
                     return
             elif current_char == '-':
-                proxC()
+                proximo_char()
                 if current_char == '-':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKDuploMenos
                     return
                 elif current_char == '=':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKMenosIgual
                     return
                 else:
                     token = TKMenos
                     return
             elif current_char == '*':
-                proxC()
+                proximo_char()
                 if current_char.isalpha():
                     token = TKPointer
                 elif current_char == '=':
                     token = TKAstIgual
                 else:
                     token = TKProd
-                proxC()
+                proximo_char()
                 return
             elif current_char == '/':
-                proxC()
+                proximo_char()
                 if current_char == '=':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKDivIgual
                     return
                 else:
                     token = TKDiv
                     return
             elif current_char == '%':
-                proxC()
+                proximo_char()
                 if current_char == '=':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKPercIgual
                     return
                 else:
                     token = TKPerc
                     return
             elif current_char == '!':
-                proxC()
+                proximo_char()
                 if current_char == '=':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKDiferente
                     return
                 else:
                     token = TKExc
                     return
             elif current_char == '&':
-                proxC()
+                proximo_char()
                 if current_char == '&':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKAndAnd
                     return
                 else:
                     token = TKAnd
                     return
             elif current_char == '|':
-                proxC()
+                proximo_char()
                 if current_char == '|':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKPipePipe
                     return
                 else:
                     token = TKPipe
                     return
             elif current_char == '>':
-                proxC()
+                proximo_char()
                 if current_char == '=':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKMaiorIgual
                     return
                 if current_char == '>':
-                    proxC()
+                    proximo_char()
                     if current_char == '=':
                         lexico += current_char
-                        proxC()
+                        proximo_char()
                         token = TKShiftRightIgual
                         return
                     else:
@@ -302,17 +302,17 @@ def get_next_token():
                     token = TKMaior
                     return
             elif current_char == '<':
-                proxC()
+                proximo_char()
                 if current_char == '=':
                     lexico += current_char
-                    proxC()
+                    proximo_char()
                     token = TKMenorIgual
                     return
                 if current_char == '<':
-                    proxC()
+                    proximo_char()
                     if current_char == '=':
                         lexico += current_char
-                        proxC()
+                        proximo_char()
                         token = TKShiftLeftIgual
                         return
                     else:
@@ -322,47 +322,47 @@ def get_next_token():
                     token = TKMenor
                     return
             elif current_char == '[':
-                proxC()
+                proximo_char()
                 token = TKAbreColchete
                 return
             elif current_char == ']':
-                proxC()
+                proximo_char()
                 token = TKFechaColchete
                 return
             elif current_char == '(':
-                proxC()
+                proximo_char()
                 token = TKAbrePar
                 return
             elif current_char == ')':
-                proxC()
+                proximo_char()
                 token = TKFechaPar
                 return
             elif current_char == '{':
-                proxC()
+                proximo_char()
                 token = TKAbreChaves
                 return
             elif current_char == '}':
-                proxC()
+                proximo_char()
                 token = TKFechaChaves
                 return
             elif current_char == ',':
-                proxC()
+                proximo_char()
                 token = TKVirgula
                 return
             elif current_char == '^':
-                proxC()
+                proximo_char()
                 token = TKCirc
                 return
             elif current_char == '~':
-                proxC()
+                proximo_char()
                 token = TKTil
                 return
             elif current_char == ';':
-                proxC()
+                proximo_char()
                 token = TKPontoEVirgula
                 return
             elif current_char == ':':
-                proxC()
+                proximo_char()
                 token = TKDoisPontos
                 return
             elif current_char == '':
@@ -371,16 +371,16 @@ def get_next_token():
                 return
             elif current_char in ' \n\t\r':
                 lexico = lexico[:-1]
-                proxC()
+                proximo_char()
             else:
                 print(
                     f"Erro léxico: encontrou o caractere {current_char} ({ord(current_char)})"
                 )
                 while current_char != '\n':
-                    proxC()
+                    proximo_char()
         elif estado == 1:
             if current_char.isalnum() or current_char == '_':
-                proxC()
+                proximo_char()
             else:
                 lexico = lexico[:-1]
                 token = palavra_reservada(lexico)
@@ -439,15 +439,16 @@ def possivelmente_vazio(func):
     return wrapper_func
 
 
-def proxC():
+def proximo_char():
     global current_char
     current_char = arquivo_entrada.read(1)
     if not current_char:
         current_char = ''
-    # print(f"Caractere lido: '{c}'")
+    if DEBUG['char']:
+        print(f"Caractere lido: '{current_char}'")
 
 
-def compound_statement():  # Medo
+def compound_statement():
     '''
     compound_statement
         : '{' '}'
@@ -750,9 +751,7 @@ def relational_expression():
         : shift_expression relational_expression_aux
         ;
     '''
-    if shift_expression():
-        if relational_expression_aux():
-            return True
+    return shift_expression() and relational_expression_aux()
 
 
 @possivelmente_vazio
@@ -766,16 +765,16 @@ def relational_expression_aux():
         | vazio
         ;
     '''
-    if (
-        token == TKMenor
-        or token == TKMaior
-        or token == TKMenorIgual
-        or token == TKMaiorIgual
-    ):
-        get_next_token()
-        if shift_expression():
-            if relational_expression_aux():
-                return True
+    return (
+        se_eh(
+            TKMenor,
+            TKMaior,
+            TKMenorIgual,
+            TKMaiorIgual,
+        )
+        and shift_expression()
+        and relational_expression_aux()
+    )
 
 
 def shift_expression():
@@ -798,7 +797,7 @@ def shift_expression_aux():
         | vazio
         ;
     '''
-    if token == TKShiftLeft or token == TKShiftRight:
+    if se_eh(TKShiftLeft, TKShiftRight):
         get_next_token()
         if additive_expression():
             if shift_expression_aux():
@@ -825,8 +824,7 @@ def additive_expression_aux():
         | vazio
         ;
     '''
-    if token == TKMais or token == TKMenos:
-        get_next_token()
+    if se_eh(TKMais, TKMenos):
         if multiplicative_expression():
             if additive_expression_aux():
                 return True
@@ -1008,6 +1006,7 @@ def statement_list():
     return statement() and statement_list_aux()
 
 
+@possivelmente_vazio
 def statement_list_aux():
     '''
     statement_list_aux
@@ -1015,14 +1014,7 @@ def statement_list_aux():
         | vazio
         ;
     '''
-    # TODO usar volta_estado_se_der_errado
-    empilha()
-    if statement() and statement_list_aux():
-        desempilha_sem_restaurar()
-        return True
-    else:
-        desempilha()
-    return True
+    return statement() and statement_list_aux()
 
 
 def statement():
@@ -1036,14 +1028,6 @@ def statement():
         | // jump_statement
         ;
     '''
-    # if volta_estado_se_der_errado(lambda: iteration_statement()):
-    #     return True
-    # elif volta_estado_se_der_errado(lambda: selection_statement()):
-    #     return True
-    # elif volta_estado_se_der_errado(lambda: expression_statement()):
-    #     return True
-    # elif volta_estado_se_der_errado(lambda: compound_statement()):
-    #     return True
     if (
         iteration_statement()
         or selection_statement()
@@ -1177,14 +1161,6 @@ def declaration_specifiers():
         return True
 
 
-# def abstract_declarator():
-#     if tk == TKPointer:
-#         return True
-#     | direct_abstract_declarator
-#     | pointer direct_abstract_declarator
-#     ;
-
-
 def type_specifier():
     '''
     type_specifier
@@ -1205,16 +1181,6 @@ def type_specifier():
         TKDouble,
         TKUnsigned,
     )
-
-
-def specifier_qualifier_list():
-    '''
-    specifier_qualifier_list
-        : type_specifier specifier_qualifier_list
-        | type_specifier
-    '''
-    global token
-    print('TODOTODOTODOTODOTODO', token)
 
 
 # -------------- Declarators
@@ -1254,17 +1220,10 @@ def direct_declarator_aux():
             if direct_declarator_aux():
                 return True
     if se_eh(TKAbrePar):
-        # TODO usar volta_estado_se_der_errado
-        empilha()
-        if parameter_type_list():
-            desempilha_sem_restaurar()
-        else:
-            desempilha()
-            empilha()
-            if identifier_list():
-                desempilha_sem_restaurar()
-            else:
-                desempilha()
+        if volta_estado_se_der_errado(
+            lambda: parameter_type_list()
+        ) or volta_estado_se_der_errado(lambda: identifier_list()):
+            pass
         if se_eh(TKFechaPar):
             if direct_declarator_aux():
                 return True
@@ -1357,7 +1316,7 @@ def main():
         print("Erro na abertura do fonte.")
         return
 
-    proxC()  # lê primeiro caractere do arquivo
+    proximo_char()  # lê primeiro caractere do arquivo
     get_next_token()  # lê primeiro token
     if function_definition():
         print("Reconheceu OK")
