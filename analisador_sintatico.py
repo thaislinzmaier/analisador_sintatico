@@ -1,7 +1,20 @@
+'''
+Analisador sintático de código C.
+Feito por: Gustavo Cauzzi e Thaís Linzemaier
+
+Implementação simplificada da gramática ANSI C Yacc grammar
+https://www.lysator.liu.se/c/ANSI-C-grammar-y.html#assignment-expression
+
+Referências para o que foi utilizado da gramática original podem ser
+encontradas no grammar.txt ou na DocString das funções. Caso houver
+um símbolo de comentário "//" na gramática significa que aquele
+caminho foi ignorado pois saia do escopo do projeto.
+'''
+
 DEBUG = {'lexico': False, 'pilha': False, 'token': True, 'char': False}
 
 # Definindo os tokens
-TKId = 1
+TKId = 1  # TODO: Transformar isso em um enum
 TKVoid = 2
 TKInt = 3
 TKFloat = 4
@@ -568,14 +581,9 @@ def assignment_expression():
         | unary_expression assignment_operator assignment_expression
         ;
     '''
-
-    def procura_atrib():
-        if unary_expression():
-            if assignment_operator():
-                if assignment_expression():
-                    return True
-
-    if volta_estado_se_der_errado(procura_atrib):
+    if volta_estado_se_der_errado(
+        lambda: unary_expression() and assignment_operator() and assignment_expression()
+    ):
         return True
     elif conditional_expression():
         return True
@@ -737,10 +745,11 @@ def equality_expression_aux():
         | vazio
         ;
     '''
-    if se_eh(TKIgual, TKDiferente):
-        if relational_expression():
-            if equality_expression_aux():
-                return True
+    return (
+        se_eh(TKIgual, TKDiferente)
+        and relational_expression()
+        and equality_expression_aux()
+    )
 
 
 def relational_expression():
@@ -878,7 +887,7 @@ def unary_expression():
     if se_eh(TKDuploMais, TKDuploMenos):
         if unary_expression():
             return True
-    elif volta_estado_se_der_errado(lambda: unary_operator()):  # Precisa?
+    elif unary_operator():
         if cast_expression():
             return True
     elif postfix_expression():
@@ -930,22 +939,21 @@ def postfix_expression_aux():
         | DEC_OP postfix_expression_aux
         ;
     '''
-    if se_eh(TKAbreColchete):
-        if expression():
-            if se_eh(TKFechaColchete):
-                if postfix_expression_aux():
-                    return True
-    if se_eh(TKDuploMais, TKDuploMenos):
-        if postfix_expression_aux():
-            return True
+    if (
+        se_eh(TKAbreColchete)
+        and expression()
+        and se_eh(TKFechaColchete)
+        and postfix_expression_aux()
+    ):
+        return True
+    if se_eh(TKDuploMais, TKDuploMenos) and postfix_expression_aux():
+        return True
     if se_eh(TKAbreChaves):
         if se_eh(TKAbreChaves):
-            if postfix_expression_aux():
-                return True
+            return postfix_expression_aux()
         elif argument_expression_list():
             if se_eh(TKAbreChaves):
-                if postfix_expression_aux():
-                    return True
+                return postfix_expression_aux()
 
 
 def argument_expression_list():
@@ -1107,12 +1115,16 @@ def iteration_statement():
         and statement()
     ):
         return True
-    if se_eh(TKDo):
-        if statement() and se_eh(TKWhile):
-            if se_eh(TKAbrePar):
-                if expression() and se_eh(TKFechaPar):
-                    if se_eh(TKPontoEVirgula):
-                        return True
+    if (
+        se_eh(TKDo)
+        and statement()
+        and se_eh(TKWhile)
+        and se_eh(TKAbrePar)
+        and expression()
+        and se_eh(TKFechaPar)
+        and se_eh(TKPontoEVirgula)
+    ):
+        return True
     if (
         se_eh(TKFor)
         and se_eh(TKAbrePar)
